@@ -1,0 +1,33 @@
+version: "3"
+services:
+  node:
+    build: node/.
+    container_name: desafiodockernginxnode_node
+    depends_on:
+      - mysql
+    environment:
+      - DB_HOST=mysql
+    networks:
+      - node-network
+  nginx:
+    build: nginx/.
+    container_name: desafiodockernginxnode_nginx
+    depends_on:
+      - node
+    volumes:
+      - ./nginx/:/etc/nginx/
+    ports:
+      - 8080:80
+    networks:
+      - node-network
+  mysql:
+    image: mysql:latest
+    container_name: desafiodockernginxnode_mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=nodedb
+    networks:
+      - node-network
+networks:
+  node-network:
+    driver: bridge
